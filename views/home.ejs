@@ -1,0 +1,20 @@
+<%- include("partials/header") -%>
+<% if(postArray.length>2){ %>
+<style>
+    .footer{
+        position: relative;
+        bottom: 0;
+    }
+</style>
+<% } %>
+    <h1>Home</h1>
+    <p><%= startingContent %></p>
+    <% postArray.forEach(function(post){ %>
+        <h1><%= post.day %></h1>
+        <p>
+            <%= post.content.slice(0,99) %> ... 
+            <a href="/posts/<%= post._id %>" >Read More</a>
+        </p>
+    <% }) %>
+
+<%- include("partials/footer") -%>
