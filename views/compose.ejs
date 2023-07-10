@@ -1,13 +1,19 @@
 <%- include("partials/header") -%>
+<style>
+    .footer{
+        position: relative;
+        bottom: 0;
+    }
+</style>
     <h1>Compose</h1>
     <form action="/compose" method="post">
         <div class="form-group">
             <label>Title</label>
-            <input class="form-control" type="text" name="composeTitle">
+            <input style="font-size: large;" class="form-control" type="text" name="composeTitle" value="<%= postTitle %>">
             <label>Post</label>
-            <textarea class="form-control" name="composePost" rows="5" cols="30"></textarea>
+            <textarea style="font-size: large;" class="form-control" name="composePost" rows="10" cols="30"><%= postBody %></textarea>
         </div>
-        <button class="btn btn-primary" type="submit" name="publish">Publish</button>
+        <button class="btn btn-primary" type="submit" name="publish" style="background-color: black; border-color: black;">Publish</button>
     </form>
 <%- include("partials/footer") -%>
 
