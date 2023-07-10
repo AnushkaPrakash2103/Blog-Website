@@ -1,5 +1,18 @@
 
 <%- include("partials/header") -%>
+<% if(post.content.length>1000){ %>
+    <style>
+        .footer{
+            position: relative;
+            bottom: 0;
+        }
+    </style>
+<% } %>
     <h1><%= post.day %></h1>
     <p><%= post.content %></p>
+    <form action="/post" method="post" style="float: right;">
+        <input type="hidden" name="postId" value="<%= postId %>"></input>
+        <button class="btn btn-primary" name="editing" type="submit" value="edit" style="background-color: black; border-color: black;">Edit</button>
+        <button class="btn btn-primary" name="editing" type="submit" value="delete" style="background-color: red; border-color: red;">Delete</button>
+    </form>
 <%- include("partials/footer") -%>
