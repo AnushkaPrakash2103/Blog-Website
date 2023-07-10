@@ -10,6 +10,7 @@ const homeStartingContent = "Lacus vel facilisis volutpat est velit egestas dui 
 const aboutContent = "Hac habitasse platea dictumst vestibulum rhoncus est pellentesque. Dictumst vestibulum rhoncus est pellentesque elit ullamcorper. Non diam phasellus vestibulum lorem sed. Platea dictumst quisque sagittis purus sit. Egestas sed sed risus pretium quam vulputate dignissim suspendisse. Mauris in aliquam sem fringilla. Semper risus in hendrerit gravida rutrum quisque non tellus orci. Amet massa vitae tortor condimentum lacinia quis vel eros. Enim ut tellus elementum sagittis vitae. Mauris ultrices eros in cursus turpis massa tincidunt dui.";
 const contactContent = "Scelerisque eleifend donec pretium vulputate sapien. Rhoncus urna neque viverra justo nec ultrices. Arcu dui vivamus arcu felis bibendum. Consectetur adipiscing elit duis tristique. Risus viverra adipiscing at in tellus integer feugiat. Sapien nec sagittis aliquam malesuada bibendum arcu vitae. Consequat interdum varius sit amet mattis. Iaculis nunc sed augue lacus. Interdum posuere lorem ipsum dolor sit amet consectetur adipiscing elit. Pulvinar elementum integer enim neque. Ultrices gravida dictum fusce ut placerat orci nulla. Mauris in aliquam sem fringilla ut morbi tincidunt. Tortor posuere ac ut consequat semper viverra nam libero.";
 
+
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -23,6 +24,10 @@ main().catch(err => console.log(err));
 
 async function main()
 {
+
+  let postTitle="";
+  let postBody="";
+
   await mongoose.connect("mongodb://0.0.0.0:27017/journalDB");
 
   const postSchema = new mongoose.Schema({
@@ -51,7 +56,7 @@ async function main()
   
   app.get("/compose", function(req,res)
   {
-    res.render("compose");
+    res.render("compose", {postTitle: postTitle, postBody: postBody});
   });
   
   app.get("/posts/:title", async function(req,res)
@@ -61,7 +66,7 @@ async function main()
     const findPost = await Post.findOne({_id: id});
     if(findPost)
     {
-      res.render("post",{post: findPost});
+      res.render("post",{post: findPost, postId: id});
     }
   
   });
@@ -75,7 +80,28 @@ async function main()
       content: composePost
     });
     compose.save();
+    postTitle="";
+    postBody="";
     res.redirect("/");
+  });
+
+  app.post("/post", async function(req,res)
+  {
+    const editing = req.body.editing;
+    const postId = req.body.postId;
+    if(editing == "delete")
+    {
+      await Post.deleteOne({_id: postId});
+      res.redirect("/");
+    }
+    else
+    {
+      const editPost = await Post.find({_id: postId});
+      postTitle = editPost[0].day;
+      postBody = editPost[0].content;
+      await Post.deleteOne({_id: postId});
+      res.redirect("/compose");
+    }
   });
 
   app.listen(3000, function() 
